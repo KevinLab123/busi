@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Box, Button, TextField } from '@mui/material';
+import { client as supabase } from '../supabase/Client';
 
 const Producto = () => {
     const [producto, setProducto] = useState({
@@ -8,34 +9,45 @@ const Producto = () => {
         codigo: ''
     });
 
-    const [codigo, setCodigo] = useState('');
-    const [precio, setPrecio] = useState('');
-    const [nombre, setNombre] = useState('');
-
-    const actualizarProducto = (precio, nombre, codigo) => {
-        setProducto({ precio, nombre, codigo });
+    // Manejador de cambios para todos los campos del formulario
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'precio' && isNaN(value)) {
+            console.log('El precio debe ser un número');
+            return;
+        }
+        // Actualiza el estado correspondiente usando el atributo name
+        setProducto((prevProducto) => ({
+            ...prevProducto,
+            [name]: value
+        }));
     };
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
+        const { codigo, precio, nombre } = producto;
         if (!codigo || !precio || !nombre) {
             console.log('Todos los campos son obligatorios');
             return;
         }
 
         try {
-            actualizarProducto(precio, nombre, codigo);
             console.log({ precio, nombre, codigo });
+
+            // Insertar el producto en la base de datos
+            const { data, error } = await supabase
+                .from('Productos')
+                .insert([
+                    { Codigo: codigo, Nombre: nombre, Precio: precio }
+                ]);
+
+            if (error) {
+                console.log('Error al agregar el producto:', error);
+                throw error;
+            }
+
+            console.log('Producto agregado:', data);
         } catch (error) {
             console.error('Error al actualizar el producto:', error);
-        }
-    };
-
-    const handlePrecioChange = (e) => {
-        const value = e.target.value;
-        if (!isNaN(value)) {
-            setPrecio(value);
-        } else {
-            console.log('El precio debe ser un número');
         }
     };
 
@@ -68,24 +80,27 @@ const Producto = () => {
                 >
                     <TextField 
                         id="codigo" 
+                        name="codigo" // Asigna el nombre del campo
                         label="Código" 
                         variant="outlined" 
-                        value={codigo}
-                        onChange={(e) => setCodigo(e.target.value)}
+                        value={producto.codigo}
+                        onChange={handleChange}
                     />
                     <TextField 
                         id="precio" 
+                        name="precio" // Asigna el nombre del campo
                         label="Precio" 
                         variant="outlined" 
-                        value={precio}
-                        onChange={handlePrecioChange}
+                        value={producto.precio}
+                        onChange={handleChange}
                     />
                     <TextField 
                         id="nombre" 
+                        name="nombre" // Asigna el nombre del campo
                         label="Nombre" 
                         variant="outlined" 
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
+                        value={producto.nombre}
+                        onChange={handleChange}
                     />
                     <Button 
                         variant="contained" 
@@ -93,7 +108,7 @@ const Producto = () => {
                         size="large" 
                         onClick={handleRegister}
                     >
-                        Agregar
+                        Registrarse
                     </Button>
                 </Box>
             </Box>
