@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
-import { Container, Box, Button, TextField } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { client as supabase } from '../supabase/Client';
 
-const EditProduct = () => {
+const EditProduct = ({ open, handleClose, initialProduct }) => {
     const [producto, setProducto] = useState({
         precio: '',
         nombre: '',
         codigo: ''
     });
 
+    useEffect(() => {
+        if (initialProduct) {
+            setProducto(initialProduct);
+        }
+    }, [initialProduct]);
+
+    // Manejador de cambios para todos los campos del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === 'precio' && isNaN(value)) {
@@ -21,50 +28,38 @@ const EditProduct = () => {
             [name]: value
         }));
     };
-    
+
     const handleUpdate = async () => {
-        const{codigo,nombre ,precio} = producto;
-        if(!codigo || !nombre || !precio){
+        const { codigo, precio, nombre } = producto;
+        if (!codigo || !precio || !nombre) {
             console.log('Todos los campos son obligatorios');
             return;
         }
 
-        try{
-            console.log({precio,nombre,codigo});
+        try {
+            console.log({ precio, nombre, codigo });
 
-            //Actualizar producto
-            const {data,error} = await supabase
-            .from('Productos')
-            //Comando para actualizar datos existentes
-            .update({Nombre: nombre, Precio: precio})
-            //En donde el codigo coincida con el codigo brindado
-            //Columna a comparar , valor a comparar
-            .eq('Codigo', codigo);
-            console.log('Producto actulizado')
-            
-        } catch(error){
+            // Actualizar el producto en la base de datos
+            const { data, error } = await supabase
+                .from('Productos')
+                .update({ Nombre: nombre, Precio: precio })
+                .eq('Codigo', codigo);
+
+            if (error) {
+                console.log('Error al actualizar el producto:', error);
+                throw error;
+            }
+
+            console.log('Producto actualizado:', data);
+        } catch (error) {
             console.error('Error al actualizar el producto:', error);
-        };
+        }
     };
 
     return (
-        <Container 
-            maxWidth="sm" 
-            sx={{ 
-                height: '100vh', 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center' 
-            }}
-        >
-            <Box 
-                sx={{ 
-                    bgcolor: 'grey.300', 
-                    padding: 4, 
-                    borderRadius: 2, 
-                    width: '50%' 
-                }}
-            >
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Editar Producto</DialogTitle>
+            <DialogContent>
                 <Box 
                     component="form" 
                     sx={{ 
@@ -76,7 +71,7 @@ const EditProduct = () => {
                 >
                     <TextField 
                         id="codigo" 
-                        name="codigo" // Asigna el nombre del campo
+                        name="codigo"
                         label="Código" 
                         variant="outlined" 
                         value={producto.codigo}
@@ -84,7 +79,7 @@ const EditProduct = () => {
                     />
                     <TextField 
                         id="precio" 
-                        name="precio" // Asigna el nombre del campo
+                        name="precio"
                         label="Precio" 
                         variant="outlined" 
                         value={producto.precio}
@@ -92,23 +87,28 @@ const EditProduct = () => {
                     />
                     <TextField 
                         id="nombre" 
-                        name="nombre" // Asigna el nombre del campo
+                        name="nombre"
                         label="Nombre" 
                         variant="outlined" 
                         value={producto.nombre}
                         onChange={handleChange}
                     />
-                    <Button 
-                        variant="contained" 
-                        color="success" 
-                        size="large" 
-                        onClick={handleUpdate}
-                    >
-                        Actualizar
-                    </Button>
                 </Box>
-            </Box>
-        </Container>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Cancelar
+                </Button>
+                <Button 
+                    variant="contained" 
+                    color="success" 
+                    size="large" 
+                    onClick={handleUpdate}
+                >
+                    Actualizar
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 }
 

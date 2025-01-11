@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, CardContent, CardActions, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { client as supabase } from '../supabase/Client';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 
-const Product = () => {
+const Product = ({ open, handleClose }) => {
     const [producto, setProducto] = useState({
         precio: '',
         nombre: '',
@@ -54,21 +50,11 @@ const Product = () => {
             console.error('Error al agregar el producto:', error);
         }
     };
-// height: '100vh', 
-//display: 'flex', 
-//justifyContent: 'center', 
-//alignItems: 'center' 
+
     return (
-        <Card>
-            <CardContent>
-            <Box 
-                sx={{ 
-                    bgcolor: 'grey.300', 
-                    padding: 4, 
-                    borderRadius: 2, 
-                    width: '50%' 
-                }}
-            >
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Registrar Producto</DialogTitle>
+            <DialogContent>
                 <Box 
                     component="form" 
                     sx={{ 
@@ -102,21 +88,22 @@ const Product = () => {
                         value={producto.nombre}
                         onChange={handleChange}
                     />
-
-                    <CardActions>
-                    <Button 
-                        variant="contained" 
-                        color="success" 
-                        size="large" 
-                        onClick={handleRegister}
-                    >
-                        Registrarse
-                    </Button>
-                    </CardActions>
                 </Box>
-            </Box>
-            </CardContent>
-            </Card>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Cancelar
+                </Button>
+                <Button 
+                    variant="contained" 
+                    color="success" 
+                    size="large" 
+                    onClick={handleRegister}
+                >
+                    Agregar
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 }
 
