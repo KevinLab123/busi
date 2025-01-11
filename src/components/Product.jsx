@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Box, Button, TextField } from '@mui/material';
 import { client as supabase } from '../supabase/Client';
 
-const Producto = () => {
+const Product = () => {
     const [producto, setProducto] = useState({
         precio: '',
         nombre: '',
@@ -47,7 +47,7 @@ const Producto = () => {
 
             console.log('Producto agregado:', data);
         } catch (error) {
-            console.error('Error al actualizar el producto:', error);
+            console.error('Error al agregar el producto:', error);
         }
     };
 
@@ -80,7 +80,7 @@ const Producto = () => {
                 >
                     <TextField 
                         id="codigo" 
-                        name="codigo" // Asigna el nombre del campo
+                        name="codigo"
                         label="Código" 
                         variant="outlined" 
                         value={producto.codigo}
@@ -88,7 +88,7 @@ const Producto = () => {
                     />
                     <TextField 
                         id="precio" 
-                        name="precio" // Asigna el nombre del campo
+                        name="precio"
                         label="Precio" 
                         variant="outlined" 
                         value={producto.precio}
@@ -96,7 +96,7 @@ const Producto = () => {
                     />
                     <TextField 
                         id="nombre" 
-                        name="nombre" // Asigna el nombre del campo
+                        name="nombre"
                         label="Nombre" 
                         variant="outlined" 
                         value={producto.nombre}
@@ -116,4 +116,4 @@ const Producto = () => {
     );
 }
 
-export default Producto;
+export default Product;

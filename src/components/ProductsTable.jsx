@@ -10,11 +10,13 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import Producto from './Producto';
+import Product from './Product'; // Asegúrate de que el archivo Product.jsx existe
+import EditProduct from './EditProduct';
 
 const ProductsTable = () => {
     const [productos, setProductos] = useState([]);
     const [open, setOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
 
     useEffect(() => {
         const fetchProductos = async () => {
@@ -33,16 +35,17 @@ const ProductsTable = () => {
     }, []);
 
     const handleAddProduct = () => {
+        setEditingProduct(null);
+        setOpen(true);
+    };
+
+    const handleEditProduct = (producto) => {
+        setEditingProduct(producto);
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
-    };
-
-    const handleEditProduct = (producto) => {
-        console.log('Editar producto:', producto);
-        // Lógica para editar el producto
     };
 
     return (
@@ -99,15 +102,19 @@ const ProductsTable = () => {
                         left: '50%', 
                         transform: 'translate(-50%, -50%)', 
                         width: '50%', 
+                        maxHeight: '80vh', // Limita la altura máxima para evitar tocar los bordes
+                        overflowY: 'auto', // Permite el desplazamiento si el contenido es demasiado grande
                         bgcolor: 'background.paper', 
                         border: '2px solid #000', 
                         boxShadow: 24, 
-                        p: 4 ,
-                        maxHeight: '80vh', // Limita la altura máxima para evitar tocar los bordes
-                        overflowY: 'auto', // Permite el desplazamiento si el contenido es demasiado grande
+                        p: 4 
                     }}
                 >
-                    <Producto />
+                    {editingProduct ? (
+                        <EditProduct initialProduct={editingProduct} />
+                    ) : (
+                        <Product />
+                    )}
                 </Box>
             </Modal>
         </>
