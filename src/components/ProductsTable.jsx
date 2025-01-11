@@ -68,31 +68,33 @@ const ProductsTable = () => {
 
     return (
         <>
-            <TableContainer component={Paper}>
-                <Table>
+            <TableContainer component={Paper} sx={{ margin: '0 auto', width: '80%' }}>
+                <Table sx={{ textAlign: 'center' }}>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Código</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Precio</TableCell>
-                            <TableCell>Acciones</TableCell>
+                            <TableCell align="center">Código</TableCell>
+                            <TableCell align="center">Nombre</TableCell>
+                            <TableCell align="center">Precio</TableCell>
+                            <TableCell align="center">Acciones</TableCell>
+                            <TableCell align="center">
+                                <Button 
+                                    variant="contained" 
+                                    color="success" 
+                                    onClick={handleAddProduct}
+                                    sx={{ marginLeft: 1 }}
+                                >
+                                    Agregar
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {productos.map((producto) => (
                             <TableRow key={producto.Codigo}>
-                                <TableCell>{producto.Codigo}</TableCell>
-                                <TableCell>{producto.Nombre}</TableCell>
-                                <TableCell>{producto.Precio}</TableCell>
-                                <TableCell>
-                                    <Button 
-                                        variant="contained" 
-                                        color="success" 
-                                        onClick={handleAddProduct}
-                                        sx={{ marginRight: 1 }}
-                                    >
-                                        Agregar
-                                    </Button>
+                                <TableCell align="center">{producto.Codigo}</TableCell>
+                                <TableCell align="center">{producto.Nombre}</TableCell>
+                                <TableCell align="center">{producto.Precio}</TableCell>
+                                <TableCell align="center">
                                     <Button 
                                         variant="contained" 
                                         color="warning" 
