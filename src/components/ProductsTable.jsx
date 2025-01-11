@@ -14,10 +14,14 @@ import Product from './Product'; // Asegúrate de que el archivo Product.jsx exi
 import EditProduct from './EditProduct';
 
 const ProductsTable = () => {
+    // Estado para almacenar la lista de productos
     const [productos, setProductos] = useState([]);
+    // Estado para controlar la visibilidad del modal
     const [open, setOpen] = useState(false);
+    // Estado para almacenar el producto que se está editando
     const [editingProduct, setEditingProduct] = useState(null);
 
+    // useEffect para obtener los productos de la base de datos cuando el componente se monta
     useEffect(() => {
         const fetchProductos = async () => {
             const { data, error } = await supabase
@@ -34,22 +38,47 @@ const ProductsTable = () => {
         fetchProductos();
     }, []);
 
+    // Función para manejar la acción de agregar un producto
     const handleAddProduct = () => {
-        setEditingProduct(null);
-        setOpen(true);
+        setEditingProduct(null); // No se está editando ningún producto
+        setOpen(true); // Abre el modal
     };
 
+    // Función para manejar la acción de editar un producto
     const handleEditProduct = (producto) => {
-        setEditingProduct(producto);
-        setOpen(true);
+        setEditingProduct(producto); // Establece el producto que se está editando
+        setOpen(true); // Abre el modal
     };
 
+    // Función para manejar la acción de eliminar un producto
+    const handleDeleteProduct = async (codigo) => {
+        try {
+            const { data, error } = await supabase
+                .from('Productos')
+                .delete()
+                .eq('Codigo', codigo);
+
+            if (error) {
+                console.error('Error al eliminar el producto:', error);
+                return;
+            }
+
+            console.log('Producto eliminado:', data);
+            // Actualizar la lista de productos después de eliminar
+            setProductos(productos.filter(producto => producto.Codigo !== codigo));
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+        }
+    };
+
+    // Función para cerrar el modal
     const handleClose = () => {
         setOpen(false);
     };
 
     return (
         <>
+            {/* Contenedor de la tabla */}
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -67,6 +96,7 @@ const ProductsTable = () => {
                                 <TableCell>{producto.Nombre}</TableCell>
                                 <TableCell>{producto.Precio}</TableCell>
                                 <TableCell>
+                                    {/* Botón para agregar un producto */}
                                     <Button 
                                         variant="contained" 
                                         color="success" 
@@ -75,13 +105,22 @@ const ProductsTable = () => {
                                     >
                                         Agregar
                                     </Button>
+                                    {/* Botón para editar un producto */}
                                     <Button 
                                         variant="contained" 
                                         color="warning" 
                                         onClick={() => handleEditProduct(producto)}
-                                        sx={{ marginLeft: 1 }}
+                                        sx={{ marginLeft: 1, marginRight: 1 }}
                                     >
                                         Editar
+                                    </Button>
+                                    {/* Botón para eliminar un producto */}
+                                    <Button 
+                                        variant="contained" 
+                                        color="error" 
+                                        onClick={() => handleDeleteProduct(producto.Codigo)}
+                                    >
+                                        Eliminar
                                     </Button>
                                 </TableCell>
                             </TableRow>
@@ -89,6 +128,7 @@ const ProductsTable = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            {/* Modal para agregar o editar un producto */}
             <Modal
                 open={open}
                 onClose={handleClose}

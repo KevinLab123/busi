@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Box, Button, TextField } from '@mui/material';
 import { client as supabase } from '../supabase/Client';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 
 const Product = () => {
     const [producto, setProducto] = useState({
@@ -50,17 +54,13 @@ const Product = () => {
             console.error('Error al agregar el producto:', error);
         }
     };
-
+// height: '100vh', 
+//display: 'flex', 
+//justifyContent: 'center', 
+//alignItems: 'center' 
     return (
-        <Container 
-            maxWidth="sm" 
-            sx={{ 
-                height: '100vh', 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center' 
-            }}
-        >
+        <Card>
+            <CardContent>
             <Box 
                 sx={{ 
                     bgcolor: 'grey.300', 
@@ -102,6 +102,8 @@ const Product = () => {
                         value={producto.nombre}
                         onChange={handleChange}
                     />
+
+                    <CardActions>
                     <Button 
                         variant="contained" 
                         color="success" 
@@ -110,9 +112,11 @@ const Product = () => {
                     >
                         Registrarse
                     </Button>
+                    </CardActions>
                 </Box>
             </Box>
-        </Container>
+            </CardContent>
+            </Card>
     );
 }
 
