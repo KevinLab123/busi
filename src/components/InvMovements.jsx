@@ -45,17 +45,36 @@ const handleCodeSearch = async (codigo) => {
 const sumEvent = async (unidades) => {
     try {
         producto.Unidades += unidades;
-        const { data, error } = await supabase
+        const { data: updateData, error: updateError } = await supabase
             .from('Productos')
             .update({ Unidades: producto.Unidades })
             .eq('Codigo', producto.Codigo);
 
-        if (error) {
-            console.error('Error al actualizar el producto:', error);
+        if (updateError) {
+            console.error('Error al actualizar el producto:', updateError);
             return;
         }
 
-        console.log('Producto actualizado en la base de datos:', data);
+        console.log('Producto actualizado en la base de datos:', updateData);
+
+        // Crear un nuevo registro en la tabla Movimientos
+        const { data: insertData, error: insertError } = await supabase
+            .from('MovInventario')
+            .insert([
+                { 
+                    Fecha: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
+                    TipoMov: 'Entrada',
+                    ProductAfectado: producto.Codigo,
+                    Unidades: unidades
+                }
+            ]);
+
+        if (insertError) {
+            console.error('Error al insertar el movimiento:', insertError);
+            return;
+        }
+
+        console.log('Movimiento insertado en la base de datos:', insertData);
     } catch (error) {
         console.error('Error al actualizar el producto en la base de datos:', error);
     }
@@ -64,36 +83,82 @@ const sumEvent = async (unidades) => {
 const restEvent = async (unidades) => {
     try {
         producto.Unidades -= unidades;
-        const { data, error } = await supabase
+        const { data: updateData, error: updateError } = await supabase
             .from('Productos')
             .update({ Unidades: producto.Unidades })
             .eq('Codigo', producto.Codigo);
 
-        if (error) {
-            console.error('Error al actualizar el producto:', error);
+        if (updateError) {
+            console.error('Error al actualizar el producto:', updateError);
             return;
         }
 
-        console.log('Producto actualizado en la base de datos:', data);
+        console.log('Producto actualizado en la base de datos:', updateData);
+
+        // Crear un nuevo registro en la tabla Movimientos
+        const { data: insertData, error: insertError } = await supabase
+            .from('MovInventario')
+            .insert([
+                { 
+                    Fecha: new Date().toISOString().split('T')[0],
+                    TipoMov: 'Salida',
+                    ProductAfectado: producto.Codigo,
+                    Unidades: unidades
+                }
+            ]);
+
+        if (insertError) {
+            console.error('Error al insertar el movimiento:', insertError);
+            return;
+        }
+
+        console.log('Movimiento insertado en la base de datos:', insertData);
     } catch (error) {
         console.error('Error al actualizar el producto en la base de datos:', error);
     }
 };
 
 const manualEvent = async (unidades) => {
+    let tipoMovimiento = 'Manual';
+    
+    if(unidades > producto.Unidades) {
+        tipoMovimiento = 'Entrada Manual';
+    }else{
+        tipoMovimiento = 'Salida Manual';
+    }
+
     try {
         producto.Unidades = unidades;
-        const { data, error } = await supabase
+        const { data: updateData, error: updateError } = await supabase
             .from('Productos')
             .update({ Unidades: producto.Unidades })
             .eq('Codigo', producto.Codigo);
 
-        if (error) {
-            console.error('Error al actualizar el producto:', error);
+        if (updateError) {
+            console.error('Error al actualizar el producto:', updateError);
             return;
         }
 
-        console.log('Producto actualizado en la base de datos:', data);
+        console.log('Producto actualizado en la base de datos:', updateData);
+
+        // Crear un nuevo registro en la tabla Movimientos
+        const { data: insertData, error: insertError } = await supabase
+            .from('MovInventario')
+            .insert([
+                { 
+                    Fecha: new Date().toISOString(),
+                    TipoMov: tipoMovimiento,
+                    ProductAfectado: producto.Codigo,
+                    Unidades: unidades
+                }
+            ]);
+
+        if (insertError) {
+            console.error('Error al insertar el movimiento:', insertError);
+            return;
+        }
+
+        console.log('Movimiento insertado en la base de datos:', insertData);
     } catch (error) {
         console.error('Error al actualizar el producto en la base de datos:', error);
     }

@@ -8,7 +8,7 @@ import InvMovements from './components/InvMovements';
 function App() {
   return (
     <div className="App">
-      <ProductsTable/>
+      <InvMovements/>
     </div>
   );
 }
