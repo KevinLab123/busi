@@ -14,6 +14,7 @@ import {
 import { client as supabase } from "../supabase/Client";
 
 const Product = ({ open, handleClose }) => {
+  
   const [producto, setProducto] = useState({
     precio: "",
     nombre: "",

@@ -76,6 +76,37 @@ const OrderManage = () => {
     }, 0);
   };
 
+const handleUnidades = async () => {
+  for (const item of orden) {
+    const { data, error } = await supabase
+      .from("Productos")
+      .select("Unidades")
+      .eq("Codigo", item.Codigo)
+      .single();
+
+    if (error) {
+      console.error(
+        `Error al obtener el producto con código ${item.Codigo}:`,
+        error
+      );
+      continue;
+    }
+
+    const nuevasUnidades = data.Unidades - item.Unidades;
+
+    const {error: updateError} = await supabase
+      .from("Productos")
+      .update({ Unidades: nuevasUnidades })
+      .eq("Codigo", item.Codigo);
+
+      if (updateError) {
+        console.error(`Error al actualizar el producto con código ${item.Codigo}:`, updateError);
+    } else {
+        console.log(`Producto con código ${item.Codigo} actualizado. Nuevas unidades: ${nuevasUnidades}`);
+    }
+  }
+};
+
   const handleRegister = async () => {
     if (orden.length === 0) {
       console.error("No hay productos en la orden.");
@@ -96,6 +127,7 @@ const OrderManage = () => {
       console.error("Error al registrar la venta:", error);
     } else {
       console.log("Venta registrada:", data);
+      await handleUnidades();
     }
   };
 
@@ -145,7 +177,7 @@ const OrderManage = () => {
                     color="primary"
                     onClick={() => handleComprar(producto.Codigo)}
                   >
-                    Comprar
+                    Agregar
                   </Button>
                 </CardContent>
               </Card>

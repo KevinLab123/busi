@@ -33,7 +33,6 @@ const MovViewer = () => {
       <Table sx={{ textAlign: "center" }}>
         <TableHead>
           <TableRow>
-            <TableCell align="center">Codigo</TableCell>
             <TableCell align="center">Usuario</TableCell>
             <TableCell align="center">Fecha</TableCell>
             <TableCell align="center">Tipo De Movimiento</TableCell>
@@ -44,7 +43,6 @@ const MovViewer = () => {
         <TableBody>
           {movimientos.map((movimiento) => (
             <TableRow key={movimiento.Codigo}>
-              <TableCell align="center">{movimiento.Codigo}</TableCell>
               <TableCell align="center">{movimiento.Usuario}</TableCell>
               <TableCell align="center">{movimiento.Fecha}</TableCell>
               <TableCell align="center">{movimiento.TipoMov}</TableCell>
