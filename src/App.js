@@ -4,11 +4,12 @@ import Product from './components/Product';
 import ProductsTable from './components/ProductsTable';
 import EditProduct from './components/EditProduct';
 import InvMovements from './components/InvMovements';
+import OrderManage from './components/OrderManage';
 
 function App() {
   return (
     <div className="App">
-      <InvMovements/>
+      <OrderManage/>
     </div>
   );
 }
