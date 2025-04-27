@@ -18,7 +18,7 @@ const NAVIGATION = [
   {
     segment: "Ordenes",
     title: "Ordenes",
-    icon: <ShoppingCartIcon />,
+    icon: <DashboardIcon />,
   },
   {
     segment: "Inventario",
@@ -64,28 +64,25 @@ const demoTheme = createTheme({
 function DemoPageContent({ pathname }) {
   let content;
 
-  switch (pathname) {
+  // Si no hay un pathname válido, carga el componente por defecto (Ordenes)
+  switch (pathname || "/Ordenes") {
     case "/Ordenes":
       content = <OrderManage />;
       break;
     case "/Inventario":
       content = <InvViewer />;
       break;
-
-    case "/productos": // Nueva ruta
+    case "/productos":
       content = <ProductsTable />;
       break;
-
     case "/Gestion":
       content = <InvMovements />;
-      break;    
-
-      case "/movimientos":
+      break;
+    case "/movimientos":
       content = <MovViewer />;
-      break;    
-
+      break;
     default:
-      content = <Typography>404 - Página no encontrada</Typography>;
+      content = <OrderManage />; // Componente por defecto
   }
 
   return (
