@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Card,
   CardContent,
   CardMedia,
@@ -10,6 +7,7 @@ import {
   Grid,
   Button,
   TextField,
+  Box,
 } from "@mui/material";
 import { client as supabase } from "../supabase/Client";
 
@@ -76,36 +74,41 @@ const OrderManage = () => {
     }, 0);
   };
 
-const handleUnidades = async () => {
-  for (const item of orden) {
-    const { data, error } = await supabase
-      .from("Productos")
-      .select("Unidades")
-      .eq("Codigo", item.Codigo)
-      .single();
+  const handleUnidades = async () => {
+    for (const item of orden) {
+      const { data, error } = await supabase
+        .from("Productos")
+        .select("Unidades")
+        .eq("Codigo", item.Codigo)
+        .single();
 
-    if (error) {
-      console.error(
-        `Error al obtener el producto con código ${item.Codigo}:`,
-        error
-      );
-      continue;
-    }
+      if (error) {
+        console.error(
+          `Error al obtener el producto con código ${item.Codigo}:`,
+          error
+        );
+        continue;
+      }
 
-    const nuevasUnidades = data.Unidades - item.Unidades;
+      const nuevasUnidades = data.Unidades - item.Unidades;
 
-    const {error: updateError} = await supabase
-      .from("Productos")
-      .update({ Unidades: nuevasUnidades })
-      .eq("Codigo", item.Codigo);
+      const { error: updateError } = await supabase
+        .from("Productos")
+        .update({ Unidades: nuevasUnidades })
+        .eq("Codigo", item.Codigo);
 
       if (updateError) {
-        console.error(`Error al actualizar el producto con código ${item.Codigo}:`, updateError);
-    } else {
-        console.log(`Producto con código ${item.Codigo} actualizado. Nuevas unidades: ${nuevasUnidades}`);
+        console.error(
+          `Error al actualizar el producto con código ${item.Codigo}:`,
+          updateError
+        );
+      } else {
+        console.log(
+          `Producto con código ${item.Codigo} actualizado. Nuevas unidades: ${nuevasUnidades}`
+        );
+      }
     }
-  }
-};
+  };
 
   const handleRegister = async () => {
     if (orden.length === 0) {
@@ -142,66 +145,66 @@ const handleUnidades = async () => {
   };
 
   return (
-    <Dialog open={true} fullWidth maxWidth="md">
-      <DialogTitle>Administrar Orden</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          {productos.map((producto) => (
-            <Grid item xs={12} sm={6} md={4} key={producto.Codigo}>
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image="https://th.bing.com/th/id/OIP.JVEgPyFjtMdFt8027-oSIAHaD4?rs=1&pid=ImgDetMain"
-                  alt={producto.Nombre}
+    <Box sx={{ padding: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Administrar Orden
+      </Typography>
+      <Grid container spacing={2}>
+        {productos.map((producto) => (
+          <Grid item xs={12} sm={6} md={4} key={producto.Codigo}>
+            <Card>
+              <CardMedia
+                component="img"
+                height="140"
+                image="https://th.bing.com/th/id/OIP.JVEgPyFjtMdFt8027-oSIAHaD4?rs=1&pid=ImgDetMain"
+                alt={producto.Nombre}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {producto.Nombre}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Precio: ${producto.Precio}
+                </Typography>
+                <TextField
+                  label="Unidades"
+                  type="number"
+                  value={unidades[producto.Codigo] || ""}
+                  onChange={(e) =>
+                    handleUnidadesChange(producto.Codigo, e.target.value)
+                  }
+                  fullWidth
+                  margin="normal"
                 />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {producto.Nombre}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Precio: ${producto.Precio}
-                  </Typography>
-                  <TextField
-                    label="Unidades"
-                    type="number"
-                    value={unidades[producto.Codigo] || ""}
-                    onChange={(e) =>
-                      handleUnidadesChange(producto.Codigo, e.target.value)
-                    }
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleComprar(producto.Codigo)}
-                  >
-                    Agregar
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleRegister}
-          sx={{ mt: 2 }}
-        >
-          Registrar Venta
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handlePrintInvoice}
-          sx={{ mt: 2 }}
-        >
-          Imprimir Factura
-        </Button>
-      </DialogContent>
-    </Dialog>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleComprar(producto.Codigo)}
+                >
+                  Agregar
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleRegister}
+        sx={{ mt: 2 }}
+      >
+        Registrar Venta
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handlePrintInvoice}
+        sx={{ mt: 2 }}
+      >
+        Imprimir Factura
+      </Button>
+    </Box>
   );
 };
 

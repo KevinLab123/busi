@@ -7,11 +7,12 @@ import InvMovements from './components/InvMovements';
 import OrderManage from './components/OrderManage';
 import MovViewer from './components/MovViewer';
 import Login from './components/Login';
+import Layout from './components/Layout';
 
 function App() {
   return (
     <div className="App">
-      <Login/>
+      <Layout/>
     </div>
   );
 }
