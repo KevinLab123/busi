@@ -10,6 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import { client as supabase } from "../supabase/Client";
+import jsPDF from "jspdf";
 
 const fetchProductos = async (setProductos) => {
   const { data, error } = await supabase
@@ -106,7 +107,9 @@ const OrderManage = () => {
     }, 0);
   };
 
-  const handleRegister = async () => {
+  const 
+  
+  handleRegister = async () => {
     if (orden.length === 0) {
       console.error("No hay productos en la orden.");
       return;
@@ -173,7 +176,7 @@ const OrderManage = () => {
         return producto;
       })
     );
-
+    generateInvoicePDF(); // Generar la factura PDF después de registrar la venta
     // Limpiar la orden después de registrar la venta
     setOrden([]);
     console.log("Unidades actualizadas y orden registrada correctamente.");
@@ -187,6 +190,45 @@ const OrderManage = () => {
     } else {
       console.log("Datos de las ventas:", data);
     }
+  };
+
+  const generateInvoicePDF = () => {
+    if (orden.length === 0) {
+      console.error("No hay productos en la orden para generar la factura.");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // Título de la factura
+    doc.setFontSize(18);
+    doc.text("Factura de Venta", 10, 10);
+
+    // Información de la orden
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 20);
+    doc.text("Productos:", 10, 30);
+
+    // Tabla de productos
+    let y = 40; // Posición inicial en el eje Y
+    orden.forEach((item, index) => {
+      const producto = productos.find((p) => p.Codigo === item.Codigo);
+      if (producto) {
+        doc.text(
+          `${index + 1}. ${producto.Nombre} - Precio: $${producto.Precio} - Unidades: ${item.Unidades}`,
+          10,
+          y
+        );
+        y += 10; // Incrementar la posición Y para la siguiente línea
+      }
+    });
+
+    // Monto total
+    const montoTotal = calcularMontoPagado();
+    doc.text(`Monto Total: $${montoTotal}`, 10, y + 10);
+
+    // Guardar el PDF
+    doc.save("factura.pdf");
   };
 
   return (
@@ -221,7 +263,6 @@ const OrderManage = () => {
                       handleUnidadesChange(producto.Codigo, e.target.value);
                     }
                   }}
-                 
                   fullWidth
                   margin="normal"
                 />
@@ -245,14 +286,7 @@ const OrderManage = () => {
       >
         Registrar Venta
       </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handlePrintInvoice}
-        sx={{ mt: 2 }}
-      >
-        Imprimir Factura
-      </Button>
+   
     </Box>
   );
 };
