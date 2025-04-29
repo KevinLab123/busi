@@ -41,7 +41,38 @@ const OrderManage = () => {
 
   const handleComprar = (codigo) => {
     const unidadesCompradas = parseInt(unidades[codigo], 10) || 0;
+      
+    // Buscar el producto seleccionado
+    const productoSeleccionado = productos.find(
+      (producto) => producto.Codigo === codigo
+    );
+
+    if (!productoSeleccionado) {
+      console.error("Producto no encontrado.");
+      return;
+    }
+
+    // Verificar si hay suficientes unidades disponibles
+    if (productoSeleccionado.Unidades === 0) {
+      console.error(`No hay unidades disponibles del producto: ${productoSeleccionado.Nombre}`);
+      return;
+    }
+
+    if (productoSeleccionado.Unidades < unidadesCompradas) {
+      console.error(
+        `No hay suficientes existencias para el producto: ${productoSeleccionado.Nombre}. ` +
+        `Unidades disponibles: ${productoSeleccionado.Unidades}, ` +
+        `Unidades solicitadas: ${unidadesCompradas}`
+      );
+      return;
+    }
+
+    // Si hay suficientes unidades, agregar el producto a la orden
     if (unidadesCompradas > 0) {
+      console.log("Producto seleccionado:", productoSeleccionado);
+      console.log("Unidades previas:", productoSeleccionado.Unidades);
+      console.log("Cantidad seleccionada:", unidadesCompradas);
+
       setOrden((prevOrden) => {
         const productoExistente = prevOrden.find(
           (item) => item.Codigo === codigo
@@ -59,9 +90,10 @@ const OrderManage = () => {
             { Codigo: codigo, Unidades: unidadesCompradas },
           ];
         }
-        console.log("Orden actualizada:", nuevaOrden);
         return nuevaOrden;
       });
+
+      console.log("Orden actualizada:", orden);
     }
   };
 
@@ -74,42 +106,6 @@ const OrderManage = () => {
     }, 0);
   };
 
-  const handleUnidades = async () => {
-    for (const item of orden) {
-      const { data, error } = await supabase
-        .from("Productos")
-        .select("Unidades")
-        .eq("Codigo", item.Codigo)
-        .single();
-
-      if (error) {
-        console.error(
-          `Error al obtener el producto con código ${item.Codigo}:`,
-          error
-        );
-        continue;
-      }
-
-      const nuevasUnidades = data.Unidades - item.Unidades;
-
-      const { error: updateError } = await supabase
-        .from("Productos")
-        .update({ Unidades: nuevasUnidades })
-        .eq("Codigo", item.Codigo);
-
-      if (updateError) {
-        console.error(
-          `Error al actualizar el producto con código ${item.Codigo}:`,
-          updateError
-        );
-      } else {
-        console.log(
-          `Producto con código ${item.Codigo} actualizado. Nuevas unidades: ${nuevasUnidades}`
-        );
-      }
-    }
-  };
-
   const handleRegister = async () => {
     if (orden.length === 0) {
       console.error("No hay productos en la orden.");
@@ -119,6 +115,7 @@ const OrderManage = () => {
     const productosAfectados = JSON.stringify(orden);
     const montoPagado = calcularMontoPagado(); // Calcular el monto pagado
 
+    // Registrar la venta en la tabla "Ventas"
     const { data, error } = await supabase.from("Ventas").insert([
       {
         ProductAfectados: productosAfectados,
@@ -128,10 +125,58 @@ const OrderManage = () => {
 
     if (error) {
       console.error("Error al registrar la venta:", error);
+      return;
     } else {
       console.log("Venta registrada:", data);
-      await handleUnidades();
     }
+
+    // Actualizar las unidades en la base de datos
+    for (const item of orden) {
+      const productoSeleccionado = productos.find(
+        (producto) => producto.Codigo === item.Codigo
+      );
+
+      if (productoSeleccionado) {
+        const nuevasUnidades = productoSeleccionado.Unidades - item.Unidades;
+
+        // Actualizar las unidades en la base de datos
+        const { error: updateError } = await supabase
+          .from("Productos")
+          .update({ Unidades: nuevasUnidades })
+          .eq("Codigo", item.Codigo);
+
+        if (updateError) {
+          console.error(
+            `Error al actualizar el producto con código ${item.Codigo}:`,
+            updateError
+          );
+        } else {
+          console.log(
+            `Producto con código ${item.Codigo} actualizado. Nuevas unidades: ${nuevasUnidades}`
+          );
+        }
+      }
+    }
+
+    // Actualizar el estado local de los productos
+    setProductos((prevProductos) =>
+      prevProductos.map((producto) => {
+        const productoEnOrden = orden.find(
+          (item) => item.Codigo === producto.Codigo
+        );
+        if (productoEnOrden) {
+          return {
+            ...producto,
+            Unidades: producto.Unidades - productoEnOrden.Unidades,
+          };
+        }
+        return producto;
+      })
+    );
+
+    // Limpiar la orden después de registrar la venta
+    setOrden([]);
+    console.log("Unidades actualizadas y orden registrada correctamente.");
   };
 
   const handlePrintInvoice = async () => {
@@ -170,9 +215,13 @@ const OrderManage = () => {
                   label="Unidades"
                   type="number"
                   value={unidades[producto.Codigo] || ""}
-                  onChange={(e) =>
-                    handleUnidadesChange(producto.Codigo, e.target.value)
-                  }
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
+                    if (value >= 1 || e.target.value === "") {
+                      handleUnidadesChange(producto.Codigo, e.target.value);
+                    }
+                  }}
+                 
                   fullWidth
                   margin="normal"
                 />

@@ -13,35 +13,38 @@ import OrderManage from "./OrderManage";
 import InvViewer from "./InvViewer";
 import InvMovements from "./InvMovements";
 import MovViewer from "./MovViewer";
+import Moving from '@mui/icons-material/Moving';
+import { ModeEdit } from "@mui/icons-material";
+import { Inventory2 } from "@mui/icons-material";
 
 const NAVIGATION = [
   {
     segment: "Ordenes",
     title: "Ordenes",
-    icon: <DashboardIcon />,
+    icon: <ShoppingCartIcon />,
   },
   {
     segment: "Inventario",
     title: "Inventario",
-    icon: <ShoppingCartIcon />,
+    icon: <Inventory2 />,
   },
 
   {
     segment: "Gestion", // Sin tilde
     title: "Gestión", // Aquí sí puede tener tilde (es solo texto)
-    icon: <ShoppingCartIcon />,
+    icon: <DashboardIcon />,
   },
 
   {
     segment: "productos", // Nueva ruta
     title: "Productos",
-    icon: <ShoppingCartIcon />, // Puedes usar otro ícono si lo prefieres
+    icon: <ModeEdit />, 
   },
 
   {
     segment: "movimientos", // Nueva ruta
     title: "Movimientos",
-    icon: <ShoppingCartIcon />, // Puedes usar otro ícono si lo prefieres
+    icon: <Moving />, // Puedes usar otro ícono si lo prefieres
   },
 ];
 
@@ -117,8 +120,8 @@ function Layout(props) {
     <AppProvider
       navigation={NAVIGATION}
       branding={{
-        logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
-        title: "MUI",
+        logo: <img src="https://pngimg.com/d/meta_PNG5.png" alt="MUI logo" />,
+        title: "BETA",
         homeUrl: "/toolpad/core/introduction",
       }}
       router={router}
