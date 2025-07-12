@@ -8,8 +8,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import Product from "./Product"; // Asegúrate de que el archivo Product.jsx existe
+import Product from "./Product";
 import EditProduct from "./EditProduct";
+import "../CSS/ProductsTable.css"; // Importa tu CSS aquí
 
 const ProductsTable = () => {
   const [productos, setProductos] = useState([]);
@@ -55,7 +56,6 @@ const ProductsTable = () => {
       }
 
       console.log("Producto eliminado:", data);
-      // Actualizar la lista de productos después de eliminar
       setProductos(productos.filter((producto) => producto.Codigo !== codigo));
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
@@ -68,8 +68,8 @@ const ProductsTable = () => {
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ margin: "0 auto", width: "80%" }}>
-        <Table sx={{ textAlign: "center" }}>
+      <TableContainer component={Paper} className="products-table-container">
+        <Table className="products-table">
           <TableHead>
             <TableRow>
               <TableCell align="center">Código</TableCell>
@@ -81,7 +81,7 @@ const ProductsTable = () => {
                   variant="contained"
                   color="success"
                   onClick={handleAddProduct}
-                  sx={{ marginLeft: 1 }}
+                  className="products-add-btn"
                 >
                   Agregar
                 </Button>
@@ -99,7 +99,7 @@ const ProductsTable = () => {
                     variant="contained"
                     color="warning"
                     onClick={() => handleEditProduct(producto)}
-                    sx={{ marginLeft: 1, marginRight: 1 }}
+                    className="products-edit-btn"
                   >
                     Editar
                   </Button>

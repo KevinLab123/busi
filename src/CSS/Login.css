@@ -1,0 +1,28 @@
+.login-main {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-paper {
+  padding: 32px;
+  border-radius: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.login-avatar {
+  margin: 0 auto 16px auto;
+  background-color: #1976d2; 
+}
+
+.login-title {
+  margin-bottom: 16px;
+}
+
+.login-error {
+  color: #d32f2f; 
+  margin-top: 8px;
+}

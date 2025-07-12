@@ -1,0 +1,47 @@
+.inv-mov-container {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 32px 24px;
+  max-width: 500px;
+}
+
+.inv-mov-title {
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #1976d2;
+  text-align: center;
+}
+
+.inv-mov-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.inv-mov-accordion .MuiAccordionSummary-root {
+  background: #f1f7ff;
+  border-radius: 8px;
+}
+
+.inv-mov-accordion .MuiAccordionDetails-root {
+  background: #f9f9f9;
+}
+
+.inv-mov-btn {
+  font-weight: bold;
+  border-radius: 8px;
+  margin-top: 8px;
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.08);
+}
+
+.inv-mov-container,
+.inv-mov-container * {
+  color: #111 !important;
+}
+
+.inv-mov-accordion .MuiAccordionSummary-root,
+.inv-mov-accordion .MuiAccordionDetails-root {
+  color: #111 !important;
+}

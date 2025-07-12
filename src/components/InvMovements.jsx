@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { client as supabase } from "../supabase/Client";
+import "../CSS/InvMovements.css"; // Solo este import, si tienes estilos propios
 
 // Datos a capturar
 let cantidad = 0;
@@ -221,9 +222,14 @@ const InvMovements = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <Typography variant="h5" component="div" gutterBottom>
+    <Container maxWidth="sm" className="inv-mov-container">
+      <Box className="inv-mov-form">
+        <Typography
+          variant="h5"
+          component="div"
+          gutterBottom
+          className="inv-mov-title"
+        >
           Movimiento de Inventario
         </Typography>
         <TextField
@@ -242,7 +248,7 @@ const InvMovements = () => {
           value={unidades}
           onChange={handleUnidadesChange}
         />
-        <Accordion>
+        <Accordion className="inv-mov-accordion">
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -278,7 +284,12 @@ const InvMovements = () => {
             </FormControl>
           </AccordionDetails>
         </Accordion>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          className="inv-mov-btn"
+        >
           Aceptar
         </Button>
       </Box>

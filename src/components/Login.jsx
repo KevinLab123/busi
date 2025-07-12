@@ -4,31 +4,35 @@ import { Box, Button, TextField, Typography, Paper, Avatar } from "@mui/material
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { client as supabase } from "../supabase/Client";
 import Layout from "./Layout"; // Importa el componente Layout
+import "../CSS/Login.css";
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar si el usuario está logueado
+  const [errorMessage, setErrorMessage] = useState(""); // Nuevo estado para el error
 
   const signIn = async (email, password) => {
     try {
       const { data, error } = await supabase
         .from("Perfiles")
-        .select("Usuario", "Contrasena")
+        .select("Usuario, Contrasena")
         .eq("Usuario", email)
         .eq("Contrasena", password);
 
       if (error) {
         console.error("Error al consultar la tabla Perfiles:", error);
+        setErrorMessage("Ocurrió un error. Intenta de nuevo.");
         return;
       }
 
       if (data.length > 0) {
-        console.log("Inicio de sesión exitoso:", data[0]);
-        setIsLoggedIn(true); // Cambia el estado a logueado
+        setIsLoggedIn(true);
+        setErrorMessage(""); // Limpia el error si inicia sesión
       } else {
-        console.log("Usuario o contraseña incorrectos");
+        setErrorMessage("Correo o contraseña incorrecta");
       }
     } catch (error) {
       console.error("Error al realizar la consulta:", error);
+      setErrorMessage("Ocurrió un error. Intenta de nuevo.");
     }
   };
 
@@ -48,28 +52,12 @@ const Login = () => {
   // Si no está logueado, muestra el formulario de inicio de sesión
   return (
     <main>
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Paper
-          elevation={6}
-          sx={{
-            padding: 4,
-            borderRadius: 3,
-            maxWidth: 400,
-            width: "90%",
-            textAlign: "center",
-          }}
-        >
-          <Avatar sx={{ m: "auto", bgcolor: "primary.main", mb: 2 }}>
+      <Box className="login-main">
+        <Paper elevation={6} className="login-paper">
+          <Avatar className="login-avatar">
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" mb={2}>
+          <Typography component="h1" variant="h5" className="login-title">
             Iniciar Sesión
           </Typography>
           <Box component="form" onSubmit={handleSubmit}>
@@ -101,6 +89,9 @@ const Login = () => {
             >
               Entrar
             </Button>
+            {errorMessage && (
+              <Typography className="login-error">{errorMessage}</Typography>
+            )}
           </Box>
         </Paper>
       </Box>
