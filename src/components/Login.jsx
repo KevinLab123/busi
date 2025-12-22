@@ -4,7 +4,6 @@ import { Box, Button, TextField, Typography, Paper, Avatar } from "@mui/material
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { client as supabase } from "../supabase/Client";
 import Layout from "./Layout"; // Importa el componente Layout
-import "../CSS/Login.css";
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar si el usuario está logueado

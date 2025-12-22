@@ -10,7 +10,6 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Product from "./Product";
 import EditProduct from "./EditProduct";
-import "../CSS/ProductsTable.css"; // Importa tu CSS aquí
 
 const ProductsTable = () => {
   const [productos, setProductos] = useState([]);

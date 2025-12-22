@@ -29,8 +29,8 @@ const InvViewer = () => {
   }, []);
 
   return (
-    <TableContainer component={Paper} sx={{ margin: "0 auto", width: "80%" }}>
-      <Table sx={{ textAlign: "center" }}>
+    <TableContainer component={Paper} className="table-container">
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell align="center">Código</TableCell>
@@ -40,14 +40,25 @@ const InvViewer = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productos.map((producto) => (
-            <TableRow key={producto.Codigo}>
-              <TableCell align="center">{producto.Codigo}</TableCell>
-              <TableCell align="center">{producto.Nombre}</TableCell>
-              <TableCell align="center">{producto.Precio}</TableCell>
-              <TableCell align="center">{producto.Unidades}</TableCell>
+          {productos.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={4}>
+                <div className="table-empty-state">
+                  <div className="table-empty-state-icon">📦</div>
+                  <div className="table-empty-state-text">No hay productos disponibles</div>
+                </div>
+              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            productos.map((producto) => (
+              <TableRow key={producto.Codigo}>
+                <TableCell align="center">{producto.Codigo}</TableCell>
+                <TableCell align="center">{producto.Nombre}</TableCell>
+                <TableCell align="center">${producto.Precio}</TableCell>
+                <TableCell align="center">{producto.Unidades}</TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>

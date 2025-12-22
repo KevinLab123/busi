@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { client as supabase } from "../supabase/Client";
-import "../CSS/InvMovements.css";
 
 const InvMovements = ({ currentUser }) => {
   const [codigo, setCodigo] = useState("");

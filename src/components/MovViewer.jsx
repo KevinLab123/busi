@@ -29,8 +29,8 @@ const MovViewer = () => {
   }, []);
 
   return (
-    <TableContainer component={Paper} sx={{ margin: "0 auto", width: "80%" }}>
-      <Table sx={{ textAlign: "center" }}>
+    <TableContainer component={Paper} className="table-container">
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell align="center">Usuario</TableCell>
@@ -41,15 +41,26 @@ const MovViewer = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {movimientos.map((movimiento) => (
-            <TableRow key={movimiento.Codigo}>
-              <TableCell align="center">{movimiento.Usuario}</TableCell>
-              <TableCell align="center">{movimiento.Fecha}</TableCell>
-              <TableCell align="center">{movimiento.TipoMov}</TableCell>
-              <TableCell align="center">{movimiento.ProductAfectado}</TableCell>
-              <TableCell align="center">{movimiento.Unidades}</TableCell>
+          {movimientos.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5}>
+                <div className="table-empty-state">
+                  <div className="table-empty-state-icon">📊</div>
+                  <div className="table-empty-state-text">No hay movimientos registrados</div>
+                </div>
+              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            movimientos.map((movimiento, index) => (
+              <TableRow key={movimiento.Codigo || index}>
+                <TableCell align="center">{movimiento.Usuario}</TableCell>
+                <TableCell align="center">{movimiento.Fecha}</TableCell>
+                <TableCell align="center">{movimiento.TipoMov}</TableCell>
+                <TableCell align="center">{movimiento.ProductAfectado}</TableCell>
+                <TableCell align="center">{movimiento.Unidades}</TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>
