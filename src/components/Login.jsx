@@ -9,6 +9,7 @@ import "../CSS/Login.css";
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controlar si el usuario está logueado
   const [errorMessage, setErrorMessage] = useState(""); // Nuevo estado para el error
+  const [currentUser, setCurrentUser] = useState(""); // Usuario logueado
 
   const signIn = async (email, password) => {
     try {
@@ -26,6 +27,7 @@ const Login = () => {
 
       if (data.length > 0) {
         setIsLoggedIn(true);
+        setCurrentUser(email); // Guarda el usuario logueado
         setErrorMessage(""); // Limpia el error si inicia sesión
       } else {
         setErrorMessage("Correo o contraseña incorrecta");
@@ -46,7 +48,7 @@ const Login = () => {
 
   // Si el usuario está logueado, renderiza el componente Layout
   if (isLoggedIn) {
-    return <Layout />;
+    return <Layout currentUser={currentUser} />;
   }
 
   // Si no está logueado, muestra el formulario de inicio de sesión

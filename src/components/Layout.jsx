@@ -64,7 +64,7 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname }) {
+function DemoPageContent({ pathname, currentUser }) {
   let content;
 
   // Si no hay un pathname válido, carga el componente por defecto (Ordenes)
@@ -79,7 +79,7 @@ function DemoPageContent({ pathname }) {
       content = <ProductsTable />;
       break;
     case "/Gestion":
-      content = <InvMovements />;
+      content = <InvMovements currentUser={currentUser} />;
       break;
     case "/movimientos":
       content = <MovViewer />;
@@ -105,10 +105,11 @@ function DemoPageContent({ pathname }) {
 
 DemoPageContent.propTypes = {
   pathname: PropTypes.string.isRequired,
+  currentUser: PropTypes.string,
 };
 
 function Layout(props) {
-  const { window } = props;
+  const { window, currentUser } = props;
 
   const router = useDemoRouter("/dashboard");
 
@@ -129,7 +130,7 @@ function Layout(props) {
       window={demoWindow}
     >
       <DashboardLayout>
-        <DemoPageContent pathname={router.pathname} />
+        <DemoPageContent pathname={router.pathname} currentUser={currentUser} />
       </DashboardLayout>
     </AppProvider>
     // preview-end
@@ -142,6 +143,7 @@ Layout.propTypes = {
    * Remove this when copying and pasting into your project.
    */
   window: PropTypes.func,
+  currentUser: PropTypes.string,
 };
 
 export default Layout;
